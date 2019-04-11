@@ -11,7 +11,13 @@ iris <- read.csv("/home/maciej/myProjects/decision_tree/data/iris_data", header 
 
 
 for(folds in c(2,3,5,10)){
-  model <- c45(iris, folds, C = 0.25, M = 2, N = 3, Q = 1, R = FALSE, stratified = TRUE)
-  # print(model$resample)
+  model <- c45(iris, folds, C = 0.25, M = 2, N = 3, Q = 1, R = FALSE)
   print(model$results$f1)
+}
+
+for(resample in model[["control"]][["indexOut"]]){
+  c1 <- resample <= 50
+  c3 <- resample >= 99
+  print(length(which(c1)))
+  print(length(which(c3)))
 }

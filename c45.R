@@ -1,9 +1,9 @@
 library(caret)
 library(MLmetrics)
 
-c45 <- function(data, folds, C, M, N, Q, R, stratified){ # if R then N else C
+c45 <- function(data, folds, C, M, N, Q, R){ # if R then N else C
   data <- data[sample(nrow(data)),]
-
+  
   x_data <- data[,1:ncol(data)-1]
   y_data <- as.factor(data[,ncol(data)])
   
@@ -21,15 +21,14 @@ c45 <- function(data, folds, C, M, N, Q, R, stratified){ # if R then N else C
     c(accuracy, precision, recall, f1)
   } 
   
-  strIndex <- NULL
-  if(stratified) strIndex <- createFolds(y_data, k = folds, returnTrain = T)
+  strIndex <- createFolds(y_data, k = folds, returnTrain = T)
   
   tc <- trainControl(
     index = strIndex,
     method = 'cv',
     number = folds,
     summaryFunction = custom_metric)
-
+  
   c45 = getModelInfo("J48", FALSE)[[1]]
   
   c45$parameters <- data.frame("parameter" = c("C","M","N","Q","R"), 
@@ -43,6 +42,7 @@ c45 <- function(data, folds, C, M, N, Q, R, stratified){ # if R then N else C
   
   c45$fit <- function (x, y, wts, param, lev, last, classProbs, ...) 
   {
+    
     dat <- if (is.data.frame(x)) 
       x
     else as.data.frame(x)
@@ -62,6 +62,7 @@ c45 <- function(data, folds, C, M, N, Q, R, stratified){ # if R then N else C
     }
     modelArgs <- c(list(formula = as.formula(".outcome ~ ."), 
                         data = dat, control = ctl), theDots)
+
     out <- do.call(RWeka::J48, modelArgs)
     out
   }
