@@ -3,7 +3,7 @@ library(MLmetrics)
 
 c45 <- function(data, folds, C, M, N, Q, R){ # if R then N else C
   data <- data[sample(nrow(data)),]
-  
+
   x_data <- data[,1:ncol(data)-1]
   y_data <- as.factor(data[,ncol(data)])
   
@@ -37,7 +37,7 @@ c45 <- function(data, folds, C, M, N, Q, R){ # if R then N else C
   
   c45$grid <- function (x, y, len = NULL, search = "grid") 
   {
-    return(data.frame(C = C, M =M, N = N, Q = Q, R = R))
+    return(data.frame(C = C, M = M, N = N, Q = Q, R = R))
   }
   
   c45$fit <- function (x, y, wts, param, lev, last, classProbs, ...) 
@@ -67,6 +67,6 @@ c45 <- function(data, folds, C, M, N, Q, R){ # if R then N else C
     out
   }
   
-  model <- train(x = x_data, y = y_data, trControl=tc, method=c45)
+  model <- train(x = x_data, y = y_data, trControl=tc, method=c45, metric = "accuracy")
   return(model)
 }
